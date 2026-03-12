@@ -1,9 +1,8 @@
 package com.kopnus.mobile.notification.service.sender.impl;
 
-import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.kopnus.mobile.notification.dto.NotificationRequest;
 import com.kopnus.mobile.notification.entity.SmsNotificationEntity;
@@ -33,7 +32,7 @@ public class SendSmsServiceImpl implements SendNotificationService {
 		 * pengecekan valid dilakukan disini agar data yang tidak valid tetap dapat disimpan untuk 
 		 * kebutuhan tracking dan audit
 		 */
-		boolean valid = notificationRequest.getReceiver() != null && !notificationRequest.getReceiver().isEmpty();
+		boolean valid = StringUtils.hasText(notificationRequest.getReceiver());
 
 		if (valid) {
 			/**
@@ -52,7 +51,6 @@ public class SendSmsServiceImpl implements SendNotificationService {
 				.subject(notificationRequest.getSubject())
 				.userId(notificationRequest.getUserId())
 				.createdBy("SMS SERVICE")
-				.createdOn(LocalDateTime.now())
 				.valid(valid)
 				.build();
 		smsNotificationRepository.save(entity);

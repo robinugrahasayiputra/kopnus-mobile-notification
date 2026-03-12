@@ -15,8 +15,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public class BaseEntity {
 	
+	@Builder.Default
 	@Column(nullable = false, updatable = false)
-	private LocalDateTime createdOn;
+	private LocalDateTime createdOn = LocalDateTime.now();
 	
 	@Column(nullable = false, updatable = false)
 	private String createdBy;

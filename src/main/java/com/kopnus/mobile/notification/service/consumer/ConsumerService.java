@@ -10,7 +10,6 @@ import com.kopnus.mobile.notification.service.sender.SendNotificationService;
 import com.kopnus.mobile.notification.service.sender.SendNotificationServiceFactory;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 /**
  * class ini bertujuan untuk menangkap semua message yang dikirimkan oleh producer berdasarkan topik
@@ -20,7 +19,6 @@ import tools.jackson.databind.ObjectMapper;
  * 
  * @author rob
  */
-@Slf4j
 @AllArgsConstructor
 @Service
 public class ConsumerService {
@@ -30,21 +28,18 @@ public class ConsumerService {
 
 	@KafkaListener(topics = KafkaTopicConstant.EMAIL_NOTIFICATION_TOPIC)
 	void consumeEmail(String message) {
-		log.info("listener email : {}", message);
 		SendNotificationService service = factory.getService(NotificationTypeEnum.EMAIL);
 		service.send(mapper.readValue(message, NotificationRequest.class));
 	}
 	
 	@KafkaListener(topics = KafkaTopicConstant.SMS_NOTIFICATION_TOPIC)
 	void consumeSms(String message) {
-		log.info("listener sms : {}", message);
 		SendNotificationService service = factory.getService(NotificationTypeEnum.SMS);
 		service.send(mapper.readValue(message, NotificationRequest.class));
 	}
 	
 	@KafkaListener(topics = KafkaTopicConstant.FIREBASE_NOTIFICATION_TOPIC)
 	void consumeFireBase(String message) {
-		log.info("listener firebase : {}", message);
 		SendNotificationService service = factory.getService(NotificationTypeEnum.FIREBASE);
 		service.send(mapper.readValue(message, NotificationRequest.class));
 	}

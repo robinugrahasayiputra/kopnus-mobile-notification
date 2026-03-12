@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,16 +18,20 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @Getter
 @Entity
-@Table(name = "firebase_notification")
-public class FirebaseNotificationEntity extends BaseEntity{
-	
+@Table(name = "firebase_notification", indexes = @Index(name = "USER_ID_IDX", columnList = "userId"))
+public class FirebaseNotificationEntity extends BaseEntity {
+
+	/*
+	 * entity ini ditambahkan indeks karena akan ada kebutuhan user untuk get data
+	 * notification untuk dibaca melalui app
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Column(nullable = false, updatable = false)
 	private Integer userId;
-	
+
 	@Column(updatable = false)
 	private String deviceToken;
 
@@ -38,7 +43,7 @@ public class FirebaseNotificationEntity extends BaseEntity{
 
 	@Builder.Default
 	private boolean read = false;
-	
+
 	private LocalDateTime lastUpdatedOn;
 
 }

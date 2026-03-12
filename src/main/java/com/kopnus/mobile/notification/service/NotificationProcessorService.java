@@ -19,26 +19,28 @@ import tools.jackson.databind.ObjectMapper;
 public class NotificationProcessorService {
 
 	private final ProducerService producerService;
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	public void sendNotificationBulk(List<NotificationRequest> notificationRequests) {
-		ObjectMapper mapper = new ObjectMapper();
 
 		/**
 		 * dengan menggunakan kafka, setiap notifikasi akan dikerjakan secara paralel
-		 * sehingga performance aplikasi akan lebih cepat daripada jika dilakukan secara berurut
+		 * sehingga performance aplikasi akan lebih cepat daripada jika dilakukan secara
+		 * berurut
 		 */
 		for (var notificationRequest : notificationRequests) {
+
 			switch (notificationRequest.getType()) {
 			case "EMAIL": {
-				producerService.sendEmailNotif(mapper.writeValueAsString(notificationRequest));
+				sendNotificationEmail(notificationRequest);
 				break;
 			}
 			case "SMS": {
-				producerService.sendSmsNotif(mapper.writeValueAsString(notificationRequest));
+				sendNotificationSms(notificationRequest);
 				break;
 			}
 			case "FIREBASE": {
-				producerService.sendFirebaseNotif(mapper.writeValueAsString(notificationRequest));
+				sendNotificationFirebase(notificationRequest);
 				break;
 			}
 			default:
@@ -47,6 +49,21 @@ public class NotificationProcessorService {
 			}
 		}
 
+	}
+
+	public void sendNotificationEmail(NotificationRequest notificationRequest) {
+		String payload = mapper.writeValueAsString(notificationRequest);
+		producerService.sendEmailNotif(payload);
+	}
+
+	public void sendNotificationSms(NotificationRequest notificationRequest) {
+		String payload = mapper.writeValueAsString(notificationRequest);
+		producerService.sendSmsNotif(payload);
+	}
+
+	public void sendNotificationFirebase(NotificationRequest notificationRequest) {
+		String payload = mapper.writeValueAsString(notificationRequest);
+		producerService.sendFirebaseNotif(payload);
 	}
 
 }
